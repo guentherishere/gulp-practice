@@ -1,13 +1,36 @@
 var gulp = require('gulp');
 var uglify = require('gulp-uglify');
 var livereload = require('gulp-livereload');
+var concat = require('gulp-concat');
+var minifyCss = require('gulp-minify-css');
+var autoprefixer = require('gulp-autoprefixer');
+var plumber = require('gulp-plumber');
 
 // File paths
+var DIST_PATH = 'public/dist';
 var SCRIPTS_PATH = 'public/scripts/**/*.js';
+var CSS_PATH = 'public/css/**/*.css';
 
 // Styles
 gulp.task('styles', function() {
     console.log('starting styles task');
+
+    return gulp.src(['public/css/reset.css', CSS_PATH])
+        .pipe(plumber(function(err) {
+          console.log('WOAH!!! That wasnt right... there was an error');
+          console.log(err);
+          // internal gulp method that stops all processes, but keeps gulp up
+          this.emit('end');
+        }))
+        .pipe(autoprefixer({
+            // will add vendor prefixes for last 2 versions of all browsers AND ie 8
+            // autoprefixer docs have all of the browsers supported
+            browsers: ['last 2 versions', 'ie 8']
+        }))
+        .pipe(concat('styles.css'))
+        .pipe(minifyCss())
+        .pipe(gulp.dest(DIST_PATH))
+        .pipe(livereload());
 });
 
 // Scripts
@@ -16,7 +39,7 @@ gulp.task('scripts', function() {
 
     return gulp.src(SCRIPTS_PATH)
         .pipe(uglify())
-        .pipe(gulp.dest('public/dist'))
+        .pipe(gulp.dest(DIST_PATH))
         .pipe(livereload());
 });
 
@@ -43,4 +66,5 @@ gulp.task('watch', function() {
     livereload.listen();
     gulp.watch(SCRIPTS_PATH, ['scripts']);
     gulp.watch('public/**/*.html', ['html']);
+    gulp.watch(CSS_PATH, ['styles']);
 });
