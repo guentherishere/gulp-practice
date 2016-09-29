@@ -45,10 +45,10 @@ gulp.task('styles', function() {
 
     return gulp.src('public/scss/styles.scss')
         .pipe(plumber(function(err) {
-          console.log('WOAH!!! That wasnt right... there was an error');
-          console.log(err);
-          // internal gulp method that stops all processes, but keeps gulp up
-          this.emit('end');
+            console.log('WOAH!!! That wasnt right... there was an error');
+            console.log(err);
+            // internal gulp method that stops all processes, but keeps gulp up
+            this.emit('end');
         }))
         .pipe(sourcemaps.init())
         .pipe(autoprefixer({
@@ -60,7 +60,7 @@ gulp.task('styles', function() {
         // .pipe(concat('styles.css'))
         // .pipe(minifyCss())
         .pipe(sass({
-          outputStyle: 'compressed'
+            outputStyle: 'compressed'
         }))
         // writes info to source file that was acquired when sourcemaps.init was run
         .pipe(sourcemaps.write())
@@ -73,7 +73,15 @@ gulp.task('scripts', function() {
     console.log('starting scripts task');
 
     return gulp.src(SCRIPTS_PATH)
+        .pipe(plumber(function(err) {
+            console.log('WOAH!!! That wasnt right.... there wasn an error');
+            console.log(err);
+            this.emit('end');
+        }))
+        .pipe(sourcemaps.init())
         .pipe(uglify())
+        .pipe(concat('scripts.js'))
+        .pipe(sourcemaps.write())
         .pipe(gulp.dest(DIST_PATH))
         .pipe(livereload());
 });
