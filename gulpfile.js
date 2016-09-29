@@ -5,30 +5,65 @@ var concat = require('gulp-concat');
 var minifyCss = require('gulp-minify-css');
 var autoprefixer = require('gulp-autoprefixer');
 var plumber = require('gulp-plumber');
+var sourcemaps = require('gulp-sourcemaps');
+var sass = require('gulp-sass');
+
 
 // File paths
 var DIST_PATH = 'public/dist';
 var SCRIPTS_PATH = 'public/scripts/**/*.js';
 var CSS_PATH = 'public/css/**/*.css';
 
-// Styles
-gulp.task('styles', function() {
-    console.log('starting styles task');
+// Styles (For regular CSS)
+// gulp.task('styles', function() {
+//     console.log('starting styles task');
+//
+//     return gulp.src(['public/css/reset.css', CSS_PATH])
+//         .pipe(plumber(function(err) {
+//           console.log('WOAH!!! That wasnt right... there was an error');
+//           console.log(err);
+//           // internal gulp method that stops all processes, but keeps gulp up
+//           this.emit('end');
+//         }))
+//         .pipe(sourcemaps.init())
+//         .pipe(autoprefixer({
+//             // will add vendor prefixes for last 2 versions of all browsers AND ie 8
+//             // autoprefixer docs have all of the browsers supported
+//             browsers: ['last 2 versions', 'ie 8']
+//         }))
+//         .pipe(concat('styles.css'))
+//         .pipe(minifyCss())
+//         // writes info to source file that was acquired when sourcemaps.init was run
+//         .pipe(sourcemaps.write())
+//         .pipe(gulp.dest(DIST_PATH))
+//         .pipe(livereload());
+// });
 
-    return gulp.src(['public/css/reset.css', CSS_PATH])
+// Styles (For SCSS)
+gulp.task('styles', function() {
+    console.log('starting scss task');
+
+    return gulp.src('public/scss/styles.scss')
         .pipe(plumber(function(err) {
           console.log('WOAH!!! That wasnt right... there was an error');
           console.log(err);
           // internal gulp method that stops all processes, but keeps gulp up
           this.emit('end');
         }))
+        .pipe(sourcemaps.init())
         .pipe(autoprefixer({
             // will add vendor prefixes for last 2 versions of all browsers AND ie 8
             // autoprefixer docs have all of the browsers supported
             browsers: ['last 2 versions', 'ie 8']
         }))
-        .pipe(concat('styles.css'))
-        .pipe(minifyCss())
+        // dont need concat and minify because SASS does this for us
+        // .pipe(concat('styles.css'))
+        // .pipe(minifyCss())
+        .pipe(sass({
+          outputStyle: 'compressed'
+        }))
+        // writes info to source file that was acquired when sourcemaps.init was run
+        .pipe(sourcemaps.write())
         .pipe(gulp.dest(DIST_PATH))
         .pipe(livereload());
 });
@@ -66,5 +101,6 @@ gulp.task('watch', function() {
     livereload.listen();
     gulp.watch(SCRIPTS_PATH, ['scripts']);
     gulp.watch('public/**/*.html', ['html']);
-    gulp.watch(CSS_PATH, ['styles']);
+    // gulp.watch(CSS_PATH, ['styles']);
+    gulp.watch('public/scss/**/*.scss', ['styles']);
 });
