@@ -7,6 +7,7 @@ var autoprefixer = require('gulp-autoprefixer');
 var plumber = require('gulp-plumber');
 var sourcemaps = require('gulp-sourcemaps');
 var sass = require('gulp-sass');
+var del = require('del');
 
 
 // File paths
@@ -91,8 +92,15 @@ gulp.task('images', function() {
     console.log('starting images task');
 });
 
+// Clean DIST directory before build
+gulp.task('clean', function() {
+  return del.sync([
+    DIST_PATH
+  ]);
+});
+
 // Default task that runs ERRRYTHING at ones
-gulp.task('default', function() {
+gulp.task('default', ['clean', 'images', 'styles', 'scripts'], function() {
     console.log('starting default task');
 });
 
@@ -103,7 +111,7 @@ gulp.task('html', function() {
 });
 
 // Keeps us from having to manually restart the server after every change
-gulp.task('watch', function() {
+gulp.task('watch', ['default'], function() {
     console.log('watch');
     require('./server.js');
     livereload.listen();
