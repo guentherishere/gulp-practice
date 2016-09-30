@@ -1,13 +1,13 @@
-var gulp = require('gulp');
-var uglify = require('gulp-uglify');
-var livereload = require('gulp-livereload');
-var concat = require('gulp-concat');
-var minifyCss = require('gulp-minify-css');
-var autoprefixer = require('gulp-autoprefixer');
-var plumber = require('gulp-plumber');
-var sourcemaps = require('gulp-sourcemaps');
-var sass = require('gulp-sass');
-var del = require('del');
+var gulp = require('gulp'),
+    uglify = require('gulp-uglify'),
+    livereload = require('gulp-livereload'),
+    concat = require('gulp-concat'),
+    minifyCss = require('gulp-minify-css'),
+    autoprefixer = require('gulp-autoprefixer'),
+    plumber = require('gulp-plumber'),
+    sourcemaps = require('gulp-sourcemaps'),
+    sass = require('gulp-sass'),
+    del = require('del');
 
 
 // File paths
@@ -94,9 +94,9 @@ gulp.task('images', function() {
 
 // Clean DIST directory before build
 gulp.task('clean', function() {
-  return del.sync([
-    DIST_PATH
-  ]);
+    return del.sync([
+        DIST_PATH
+    ]);
 });
 
 // Default task that runs ERRRYTHING at ones
